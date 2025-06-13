@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signers List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .table-container {
+            margin: 30px auto;
+            max-width: 1200px;
+        }
+        .table-header {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .action-btns {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container table-container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Signers List</h2>
+            <a href="{% url 'addSigner' %}" class="btn btn-primary">Add New Signer</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-header">
+                    <tr>
+                        <th>ID</th>
+                        <th>Unique Name</th>
+                        <th>Algorithm</th>
+                        <th>Key Length or Curve</th>
+                        <th>Hash Function</th>
+                        <th>Expires On</th>
+                        <th>Created On</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for signer in signers %}
+                    <tr>
+                       <td><a href="{% url 'signerDetail' signer.unique_id %}">{{ signer.unique_name }}</a></td>
+
+                        <td>{{ signer.unique_name }}</td>
+                        <td>{{ signer.get_signing_algorithm_display}}</td>
+                        <td>
+    {% if signer.key_length %}
+        {{ signer.key_length }}-bit
+    {% elif signer.curve %}
+        {{ signer.curve }}
+    {% else %}
+        —
+    {% endif %}
+</td>
+
+                        <td>{{ signer.hash_function.name }} ({{ signer.hash_function.digest_size }} bits)</td>
+                        <td>{{ signer.expires_by|date:"Y-m-d" }}</td>
+                        <td>{{ signer.created_on|date:"Y-m-d" }}</td>
+                        <td class="action-btns">
+                           <a href="{% url 'editSigner' signer.unique_id %}" class="btn btn-sm btn-warning">Edit</a>
+
+                            <form method="post" action="{% url 'deleteSigner' signer.unique_id %}" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this signer?');">Delete</button>
+</form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center">No signers found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

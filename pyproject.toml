@@ -1,0 +1,45 @@
+[tool.ruff]
+line-length = 120
+indent-width = 4
+exclude = [
+    ".venv1",".venv",".venv_311"
+]
+
+
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"
+inline-quotes = "single"
+multiline-quotes = "double"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "ANN401", # Since django makes extensive use of the Any type, we are OK with using it.
+    "COM812", # Not compatible with the formatted
+    "TD003",
+]
+exclude = ["**/migrations/*", "**/manage.py",".venv1",".venv",".venv_311"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**/**.py" = ["S101"]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+docstring-code-format = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.django-stubs]
+django_settings_module = "django_project.settings"
+
+[tool.mypy]
+strict = true
+plugins = ["mypy_django_plugin.main"]
+mypy_path = ["trustpoint"]
+exclude = "^(tests/|.*/tests/|migrations/|.*/migrations/)"
+
+[[tool.mypy.overrides]]
+module = ["crispy_bootstrap5.*", "crispy_forms.*"]
+ignore_missing_imports = true

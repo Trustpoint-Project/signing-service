@@ -1,0 +1,40 @@
+"""Contains Models For Signers App."""
+
+from typing import ClassVar
+
+from django.db import models
+from trustpoint_core.oid import AlgorithmIdentifier
+
+
+class Signer(models.Model):
+    """Generates Signer Object."""
+
+    SIGNING_ALGORITHM_CHOICES: ClassVar[list[tuple[str, str]]] = [
+        (x.dotted_string, x.verbose_name) for x in AlgorithmIdentifier
+    ]
+
+    unique_id = models.AutoField(primary_key=True)
+    unique_name = models.CharField(max_length=30, unique=True)
+    signing_algorithm = models.CharField(max_length=50, choices=SIGNING_ALGORITHM_CHOICES, editable=True)
+    key_length = models.IntegerField(null=True, blank=True)
+    curve = models.CharField(max_length=50, null=True, blank=True)  # noqa:DJ001
+    hash_function = models.CharField(max_length=50)
+    private_key = models.CharField(max_length=4096)
+    certificate = models.CharField(max_length=4096)
+    expires_by = models.DateTimeField()
+    created_by = models.CharField(max_length=100)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        """Returns object name."""
+        return self.unique_name
+
+
+class SignedMessage(models.Model):
+    signer = models.ForeignKey(Signer, on_delete=models.CASCADE, related_name='signed_messages')
+    hash_value = models.CharField(max_length=256)
+    signature = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Signature by {self.signer.unique_name} on {self.created_at.strftime("%Y-%m-%d %H:%M:%S")}'
