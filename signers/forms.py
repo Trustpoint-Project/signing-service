@@ -14,10 +14,7 @@ from signers.models import Signer
 class SignerForm(ModelForm):
     """Creates Add Signer Form."""
 
-    curve = forms.CharField(required=False)
-
     class Meta:
-
         model = Signer
         fields: ClassVar = ['unique_name', 'signing_algorithm', 'key_length', 'curve', 'hash_function', 'expires_by']
         widgets: ClassVar = {
@@ -30,6 +27,21 @@ class SignerForm(ModelForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
 
+    def clean_unique_name(self) -> str:
+        """Ensures unique_name is truly unique, except for current instance in edit mode."""
+        unique_name = self.cleaned_data.get('unique_name')
+        if not unique_name:
+            return unique_name
+
+        qs = Signer.objects.filter(unique_name=unique_name)
+        if self.instance.pk:
+            qs = qs.exclude(pk=self.instance.pk)
+
+        if qs.exists():
+            raise ValidationError('A signer with this name already exists.')
+
+        return unique_name
+
     def clean(self) -> dict[str, Any]:
         """Cleans and validates form input for algorithm-specific constraints."""
         cleaned_data: dict[str, Any] = super().clean() or {}
@@ -37,7 +49,7 @@ class SignerForm(ModelForm):
         algorithm_oid_str = cleaned_data.get('signing_algorithm')
         key_length = cleaned_data.get('key_length')
         expires_by = cleaned_data.get('expires_by')
-        curve_input = self.data.get('curve')
+        curve_input = cleaned_data.get('curve')
 
         if not algorithm_oid_str:
             msg = 'Signing algorithm is required.'
@@ -51,17 +63,15 @@ class SignerForm(ModelForm):
 
         if algorithm_enum.public_key_algo_oid.name == 'ECC':
             if not curve_input:
-                msg = 'Curve must be selected for ECC-based algorithms.'
-                raise ValidationError(msg)
-            try:
-                selected_curve = next(c for c in NamedCurve if c.value.ossl_curve_name == curve_input)
-                cleaned_data['curve'] = selected_curve.name
-            except StopIteration:
-                msg = f'Invalid ECC curve: {curve_input}'
-                raise ValidationError(msg) from None
+                raise ValidationError('Curve must be selected for ECC-based algorithms.')
+
+            available_curves = [c.value.ossl_curve_name for c in NamedCurve]
+            if curve_input not in available_curves:
+                raise ValidationError(f'Invalid ECC curve: {curve_input}')
+
             cleaned_data['key_length'] = None
 
-        else:  # RSA
+        else:
             if not key_length:
                 msg = 'Key length must be selected for RSA-based algorithms.'
                 raise ValidationError(msg)

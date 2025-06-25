@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Signer</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 40px;
+        }
+        .signer-card {
+            max-width: 600px;
+            margin: 0 auto;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #0d6efd;
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            padding: 1.5rem;
+        }
+        .form-control, .form-select {
+            height: 45px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+        }
+        .form-label {
+            font-size: 0.9rem;
+            color: #495057;
+            margin-bottom: 0.5rem;
+            display: block;
+            font-weight: 500;
+        }
+        .btn-cancel {
+            width: 120px;
+        }
+        .btn-submit {
+            width: 150px;
+        }
+        .is-invalid {
+            border-color: #dc3545;
+        }
+        .invalid-feedback {
+            color: #dc3545;
+            font-size: 0.875em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card signer-card">
+            <div class="card-header">
+                <h2 class="mb-1">Add Signer</h2>
+                <h4 class="mb-0">New Signer</h4>
+            </div>
+
+            <div class="card-body p-4">
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            Please correct the errors below.
+                        </div>
+                    {% endif %}
+
+{#                    <div class="mb-4">#} new
+{#                        <label class="form-label">UNIQUE NAME</label>#}
+{#                        <input type="text"#}
+{#                               class="form-control {% if form.unique_name.errors %}is-invalid{% endif %}"#}
+{#                               name="unique_name"#}
+{#                               required#}
+{#                               value="{{ form.unique_name.value|default:'' }}">#}
+{#                        {% if form.unique_name.errors %}#}
+{#                            <div class="invalid-feedback">#}
+{#                                {{ form.unique_name.errors.0 }}#}
+{#                            </div>#}
+{#                        {% endif %}#}
+{#                    </div>#}
+{{ form.as_div }}
+{#                    <div class="mb-4">#}
+{#                        <label class="form-label">ALGORITHM TYPE</label>#}
+{#                        <select class="form-select {% if form.signing_algorithm.errors %}is-invalid{% endif %}"#}
+{#                                name="signing_algorithm" required>#}
+{#                            <option value="">Choose a signing algorithm</option>#}
+{#                            {% for value, label in signing_algorithms %}#}
+{#                                <option value="{{ value }}"#}
+{#                                    {% if form.signing_algorithm.value == value %}selected{% endif %}>#}
+{#                                    {{ label }}#}
+{#                                </option>#}
+{#                            {% endfor %}#}
+{#                        </select>#}
+{#                        {% if form.signing_algorithm.errors %}#}
+{#                            <div class="invalid-feedback">#}
+{#                                {{ form.signing_algorithm.errors.0 }}#}
+{#                            </div>#}
+{#                        {% endif %}#}
+{#                    </div>#}
+
+{#                    <div class="mb-4" id="key-length-block">#}
+{#    <label class="form-label">KEY LENGTH</label>#}
+{#    <select class="form-select {% if form.key_length.errors %}is-invalid{% endif %}"#}
+{#            name="key_length" required>#}
+{#        <option value="">Choose a Key Length</option>#}
+{#        <option value="2048" {% if form.key_length.value == '2048' %}selected{% endif %}>2048-bit</option>#}
+{#        <option value="3072" {% if form.key_length.value == '3072' %}selected{% endif %}>3072-bit</option>#}
+{#        <option value="4096" {% if form.key_length.value == '4096' %}selected{% endif %}>4096-bit</option>#}
+{#    </select>#}
+{#    {% if form.key_length.errors %}#}
+{#        <div class="invalid-feedback">#}
+{#            {{ form.key_length.errors.0 }}#}
+{#        </div>#}
+{#    {% endif %}#}
+{#</div>#}
+{#                <div class="mb-4 d-none" id="curve-block">#}
+{#    <label class="form-label">ECC CURVE</label>#}
+{#    <select class="form-select {% if form.errors.curve %}is-invalid{% endif %}" name="curve">#}
+{#    <option value="">Choose a Curve</option>#}
+{#    {% for curve_id, curve_name in ecc_curves %}#}
+{#        <option value="{{ curve_id }}"#}
+{#            {% if curve_id == form.data.curve or curve_id == form.initial.curve %}selected{% endif %}>#}
+{#            {{ curve_name }}#}
+{#        </option>#}
+{#    {% endfor %}#}
+{#</select>#}
+{#</div>#}
+{##}
+{#                    <div class="mb-4">#}
+{#                        <label class="form-label">EXPECTED HASH FUNCTION</label>#}
+{#                        <input type="text" id="hash_display" class="form-control" readonly>#}
+{#                        <input type="hidden" name="hash_function" id="hash_hidden" required>#}
+{#                        {% if form.hash_function.errors %}#}
+{#                            <div class="invalid-feedback d-block">#}
+{#                                {{ form.hash_function.errors.0 }}#}
+{#                            </div>#}
+{#                        {% endif %}#}
+{#                    </div>#}
+{##}
+{#                    <div class="mb-4">#}
+{#                        <label class="form-label">EXPIRES ON</label>#}
+{#                        <input type="date"#}
+{#                               class="form-control {% if form.expires_by.errors %}is-invalid{% endif %}"#}
+{#                               name="expires_by"#}
+{#                               required#}
+{#                               value="{{ form.expires_by.value|default:'' }}">#}
+{#                        {% if form.expires_by.errors %}#}
+{#                            <div class="invalid-feedback">#}
+{#                                {{ form.expires_by.errors.0 }}#}
+{#                            </div>#}
+{#                        {% endif %}#}
+{#                    </div>#}
+
+                    <div class="d-flex justify-content-end gap-3 mt-4">
+                        <button type="button" class="btn btn-outline-secondary btn-cancel" onclick="window.history.back()">
+                            Cancel
+                        </button>
+                       <button type="submit" class="btn btn-primary btn-submit">
+                            Create Signer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+
+
+            const algoHashMap = {{ algo_hash_map_json|safe }};
+            const algoSelect = document.querySelector('select[name="signing_algorithm"]');
+            const hashDisplay = document.getElementById('hash_display');
+            const hashHidden = document.getElementById('hash_hidden');
+
+            function updateHashDisplay(algoValue) {
+                const hash = algoHashMap[algoValue] || '';
+                hashDisplay.value = hash;
+                hashHidden.value = hash;
+            }function toggleKeyLengthOrCurve() {
+    const selectedOption = algoSelect.options[algoSelect.selectedIndex];
+    const labelText = selectedOption.textContent;
+    const isECC = labelText.includes("ECDSA") || labelText.includes("EC");
+
+    const keyLengthField = document.querySelector('select[name="key_length"]');
+    const curveField = document.querySelector('select[name="curve"]');
+
+
+    document.getElementById("key-length-block").classList.toggle("d-none", isECC);
+    document.getElementById("curve-block").classList.toggle("d-none", !isECC);
+
+
+    keyLengthField.required = !isECC;
+    curveField.required = isECC;
+
+
+    if (isECC) {
+        keyLengthField.value = "";
+    } else {
+        curveField.value = "";
+    }
+}
+
+
+if (algoSelect) {
+    updateHashDisplay(algoSelect.value);
+    toggleKeyLengthOrCurve();
+
+    algoSelect.addEventListener('change', () => {
+        const value = algoSelect.value;
+        updateHashDisplay(value);
+        toggleKeyLengthOrCurve();
+    });
+}
+
+        });
+    </script>
+</body>
+</html>
