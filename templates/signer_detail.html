@@ -15,7 +15,7 @@
 <body>
     <h1>Signer: {{ signer.unique_name }}</h1>
 
-    <div class="field"><strong>Signer ID:</strong> {{ signer.unique_id }}</div>
+    <div class="field"><strong>Signer ID:</strong> {{ signer.pk }}</div>
     <div class="field"><strong>Signing Algorithm:</strong> {{signer.get_signing_algorithm_display}}</div>
     <div class="field"><strong>Hash Function:</strong> {{ signer.hash_function }}</div>
 
@@ -43,7 +43,7 @@
         <div class="field"><strong>Serial Number:</strong> {{ cert_details.serial_number }}</div>
         <div class="field"><strong>Valid From:</strong> {{ cert_details.not_valid_before }}</div>
         <div class="field"><strong>Valid Until:</strong> {{ cert_details.not_valid_after }}</div>
-        <div class="field"><strong>Cert:</strong> {{ cert_details.certificate|truncatechars:1000 }}</div>
+        <div class="field"><strong>Cert:</strong> {{ cert_details.certificate|truncatechars:10000 }}</div>
     {% endif %}
 {% else %}
     <p>No certificate available.</p>

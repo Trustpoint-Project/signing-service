@@ -21,9 +21,8 @@ class Signer(models.Model):
         (3072, '3072 bits'),
         (4096, '4096 bits'),
         (8192, '8192 bits'),
-    ]
+    ]  # use integerchoices
 
-    unique_id = models.AutoField(primary_key=True)
     unique_name = models.CharField(max_length=30, unique=True)
     signing_algorithm = models.CharField(max_length=50, choices=SIGNING_ALGORITHM_CHOICES, editable=True)
     key_length = models.IntegerField(null=True, blank=True, choices=KEY_LENGTH_CHOICES)
