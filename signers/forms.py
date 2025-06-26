@@ -1,6 +1,6 @@
 """Contains Logic for Form on Add/Edit Signer Page."""
 
-from typing import Any, ClassVar
+from typing import Any, ClassVar, cast
 
 from crispy_forms.helper import FormHelper
 from django import forms
@@ -11,7 +11,7 @@ from trustpoint_core.oid import AlgorithmIdentifier, NamedCurve
 from signers.models import Signer
 
 
-class SignerForm(ModelForm):
+class SignerForm(ModelForm[Signer]):
     """Creates Form to create/modify Signers."""
 
     class Meta:
@@ -37,16 +37,18 @@ class SignerForm(ModelForm):
         Returns: If check for uniqueness is successful. Returns the uniquename.
 
         """
-        unique_name = self.cleaned_data.get('unique_name')
+        unique_name = cast('str', self.cleaned_data.get('unique_name'))
         if not unique_name:
-            return unique_name
+            err_msg = 'Unique name is required.'
+            raise ValidationError(err_msg)
 
         qs = Signer.objects.filter(unique_name=unique_name)
         if self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
 
         if qs.exists():
-            self.add_error('unique_name', 'Signer already exists with this name.')
+            err_msg = 'Signer already exists.'
+            raise ValidationError(err_msg)
 
         return unique_name
 
@@ -69,11 +71,13 @@ class SignerForm(ModelForm):
 
         try:
             algorithm_enum = AlgorithmIdentifier.from_dotted_string(algorithm_oid_str)
-        except ValueError:
+        except ValueError as exception:
             msg = f'Invalid algorithm: {algorithm_oid_str}'
-            raise ValidationError(msg) from None
-
-        if algorithm_enum.public_key_algo_oid.name == 'ECC':
+            raise ValidationError(msg) from exception
+        if algorithm_enum.public_key_algo_oid is None:
+            msg = 'Public key oid cannot be None.'
+            raise ValidationError(msg)
+        elif  algorithm_enum.public_key_algo_oid.name == 'ECC':
             if not curve_input:
                 self.add_error('curve', 'Curve must be selected for ECC-based algorithms.')
             available_curves = [c.value.ossl_curve_name for c in NamedCurve]
@@ -86,8 +90,8 @@ class SignerForm(ModelForm):
             if not key_length:
                 msg = 'Key length must be selected for RSA-based algorithms.'
                 raise ValidationError(msg)
-            if key_length not in [2048, 3072, 4096]:
-                msg = 'Unsupported key length. Choose 2048, 3072, or 4096.'
+            if int(key_length) not in [2048, 3072, 4096, 8192]:
+                msg = 'Unsupported key length. Choose 2048, 3072, 4096, or 8192.'
                 raise ValidationError(msg)
             cleaned_data['curve'] = None
 

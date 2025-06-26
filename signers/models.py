@@ -6,6 +6,15 @@ from django.db import models
 from trustpoint_core.oid import AlgorithmIdentifier, NamedCurve
 
 
+class KeyLengths(models.IntegerChoices):
+    """Key Lengths Choices."""
+
+    B2048 = 2048, '2048 bits'
+    B3072 = 3072, '3072 bits'
+    B4096 = 4096, '4096 bits'
+    B8192 = 8192, '8192 bits'
+
+
 class Signer(models.Model):
     """Contains fields for signer model."""
 
@@ -16,16 +25,9 @@ class Signer(models.Model):
         (x.value.ossl_curve_name, x.name) for x in NamedCurve if x.value.ossl_curve_name
     ]
 
-    KEY_LENGTH_CHOICES: ClassVar[list[tuple[str, str]]] = [
-        (2048, '2048 bits'),
-        (3072, '3072 bits'),
-        (4096, '4096 bits'),
-        (8192, '8192 bits'),
-    ]  # use integerchoices
-
     unique_name = models.CharField(max_length=30, unique=True)
     signing_algorithm = models.CharField(max_length=50, choices=SIGNING_ALGORITHM_CHOICES, editable=True)
-    key_length = models.IntegerField(null=True, blank=True, choices=KEY_LENGTH_CHOICES)
+    key_length = models.IntegerField(null=True, blank=True, choices=KeyLengths.choices)
     curve = models.CharField(max_length=50, choices=SIGNING_CURVE_CHOICES, null=True, blank=True)  # noqa:DJ001
     hash_function = models.CharField(max_length=50)
     private_key = models.CharField(max_length=4096)

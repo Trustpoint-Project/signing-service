@@ -1,9 +1,14 @@
 """This File contains functions to create Public and Private Keys."""
 
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
+from cryptography.hazmat.primitives.asymmetric.types import PRIVATE_KEY_TYPES
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
+from django.core.exceptions import ValidationError
+from trustpoint_core.crypto_types import PrivateKey
 from trustpoint_core.oid import AlgorithmIdentifier, NamedCurve
 from trustpoint_core.serializer import PrivateKeySerializer
+from typing import get_args
 
 
 def generate_private_key(algorithm_oid_str: str, curve_name: str | None, key_size: int | None) -> str:
@@ -14,11 +19,16 @@ def generate_private_key(algorithm_oid_str: str, curve_name: str | None, key_siz
         curve_name: curve name which is used to generate the private key (either of two is used).
         key_size: length of the private key (either of two is used).
 
-    Returns: Gives out the private key. In string pem format.
+    Returns:
+        Gives out the private key. In string pem format.
 
     """
-    algorithm_enum = AlgorithmIdentifier.from_dotted_string(algorithm_oid_str)
+    private_key: PRIVATE_KEY_TYPES
 
+    algorithm_enum = AlgorithmIdentifier.from_dotted_string(algorithm_oid_str)
+    if algorithm_enum.public_key_algo_oid is None:
+        msg = 'Public key oid cannot be None.'
+        raise ValueError(msg)
     if algorithm_enum.public_key_algo_oid.name == 'ECC':
         if not curve_name:
             msg = 'ECC curve name is required.'
@@ -30,8 +40,11 @@ def generate_private_key(algorithm_oid_str: str, curve_name: str | None, key_siz
             available = [c.value.ossl_curve_name for c in NamedCurve]
             msg = f'Unsupported ECC curve: {curve_name}. Available: {available}'
             raise ValueError(msg) from None
-
-        private_key = ec.generate_private_key(curve_obj())
+        if curve_obj is None:
+            msg = 'ECC curve name is required.'
+            raise ValueError(msg)
+        else:
+            private_key = ec.generate_private_key(curve_obj())
     else:
         if not key_size:
             x = 'RSA key length is required.'
@@ -42,7 +55,7 @@ def generate_private_key(algorithm_oid_str: str, curve_name: str | None, key_siz
     return pem.decode('utf-8')
 
 
-def load_private_key_object(pem_str: str) -> load_pem_private_key:
+def load_private_key_object(pem_str: str) -> PrivateKey:
     """This function loads a private key from PEM format.
 
     Args:
@@ -51,4 +64,9 @@ def load_private_key_object(pem_str: str) -> load_pem_private_key:
     Returns: Returns a PrivateKey object.
 
     """
-    return load_pem_private_key(pem_str.encode('utf-8'), password=None)
+    private_keyabc = load_pem_private_key(pem_str.encode('utf-8'), password=None)
+    if isinstance(private_keyabc, get_args(PrivateKey)):
+        return private_keyabc
+
+    err_msg = 'Private key must be of type PrivateKey.'
+    raise TypeError(err_msg)

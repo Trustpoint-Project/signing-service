@@ -50,7 +50,7 @@
                         <td>{{ signer.get_signing_algorithm_display}}</td>
                         <td>
     {% if signer.key_length %}
-        {{ signer.key_length }}-bit
+        {{ signer.key_length }} bits
     {% elif signer.curve %}
         {{ signer.curve }}
     {% else %}
@@ -58,7 +58,7 @@
     {% endif %}
 </td>
 
-                        <td>{{ signer.hash_function.name }} ({{ signer.hash_function.digest_size }} bits)</td>
+                        <td>{{ signer.hash_function.name }} {{ signer.hash_function }}</td>
                         <td>{{ signer.expires_by|date:"Y-m-d" }}</td>
                         <td>{{ signer.created_on|date:"Y-m-d" }}</td>
                         <td class="action-btns">
