@@ -29,6 +29,11 @@ class SignerForm(ModelForm[Signer]):
         self.helper = FormHelper()
         self.helper.form_tag = False
 
+        if self.instance and self.instance.pk:
+            for field_name in self.fields:
+                if field_name != 'unique_name':
+                    self.fields[field_name].disabled = True
+
     def clean_unique_name(self) -> str:
         """Ensures check for uniqueness of the name while creating a signer.
 
@@ -77,7 +82,7 @@ class SignerForm(ModelForm[Signer]):
         if algorithm_enum.public_key_algo_oid is None:
             msg = 'Public key oid cannot be None.'
             raise ValidationError(msg)
-        elif  algorithm_enum.public_key_algo_oid.name == 'ECC':
+        if algorithm_enum.public_key_algo_oid.name == 'ECC':
             if not curve_input:
                 self.add_error('curve', 'Curve must be selected for ECC-based algorithms.')
             available_curves = [c.value.ossl_curve_name for c in NamedCurve]

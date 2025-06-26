@@ -70,7 +70,7 @@
     }
 
 
-    const match = selectedLabel.match(/\b(MD5|SHA1|SHA224|SHA256|SHA384|SHA512)\b/i);
+    const match = selectedLabel.match(/\b(SHA3?-?\d{3}|MD5|SHA1|MAC)\b/i);;
     if (match && hashFunctionInput) {
       hashFunctionInput.value = match[0].toUpperCase();
     } else if (hashFunctionInput) {

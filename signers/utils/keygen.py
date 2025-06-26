@@ -1,14 +1,15 @@
 """This File contains functions to create Public and Private Keys."""
 
+from typing import TYPE_CHECKING, get_args
+
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
-from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
-from cryptography.hazmat.primitives.asymmetric.types import PRIVATE_KEY_TYPES
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
-from django.core.exceptions import ValidationError
 from trustpoint_core.crypto_types import PrivateKey
 from trustpoint_core.oid import AlgorithmIdentifier, NamedCurve
 from trustpoint_core.serializer import PrivateKeySerializer
-from typing import get_args
+
+if TYPE_CHECKING:
+    from cryptography.hazmat.primitives.asymmetric.types import PRIVATE_KEY_TYPES
 
 
 def generate_private_key(algorithm_oid_str: str, curve_name: str | None, key_size: int | None) -> str:
@@ -43,8 +44,7 @@ def generate_private_key(algorithm_oid_str: str, curve_name: str | None, key_siz
         if curve_obj is None:
             msg = 'ECC curve name is required.'
             raise ValueError(msg)
-        else:
-            private_key = ec.generate_private_key(curve_obj())
+        private_key = ec.generate_private_key(curve_obj())
     else:
         if not key_size:
             x = 'RSA key length is required.'
