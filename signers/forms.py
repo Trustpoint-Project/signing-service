@@ -1,4 +1,4 @@
-"""Contains Logic of Form on Add Signer Page."""
+"""Contains Logic for Form on Add/Edit Signer Page."""
 
 from typing import Any, ClassVar
 
@@ -12,9 +12,11 @@ from signers.models import Signer
 
 
 class SignerForm(ModelForm):
-    """Creates Add Signer Form."""
+    """Creates Form to create/modify Signers."""
 
     class Meta:
+        """Metaclass."""
+
         model = Signer
         fields: ClassVar = ['unique_name', 'signing_algorithm', 'key_length', 'curve', 'hash_function', 'expires_by']
         widgets: ClassVar = {
@@ -28,7 +30,13 @@ class SignerForm(ModelForm):
         self.helper.form_tag = False
 
     def clean_unique_name(self) -> str:
-        """Ensures unique_name is truly unique, except for current instance in edit mode."""
+        """Ensures check for uniqueness of the name while creating a signer.
+
+        Also let you bypass the check if the signer already exists.(Using the same form for add/modify signers).
+
+        Returns: If check for uniqueness is successful. Returns the uniquename.
+
+        """
         unique_name = self.cleaned_data.get('unique_name')
         if not unique_name:
             return unique_name
@@ -38,12 +46,16 @@ class SignerForm(ModelForm):
             qs = qs.exclude(pk=self.instance.pk)
 
         if qs.exists():
-            raise ValidationError('A signer with this name already exists.')
+            self.add_error('unique_name', 'Signer already exists with this name.')
 
         return unique_name
 
     def clean(self) -> dict[str, Any]:
-        """Cleans and validates form input for algorithm-specific constraints."""
+        """This functions validates, checks and parse the data from the form.
+
+        Returns: Cleaned and validated data from the form.
+
+        """
         cleaned_data: dict[str, Any] = super().clean() or {}
 
         algorithm_oid_str = cleaned_data.get('signing_algorithm')
@@ -63,11 +75,10 @@ class SignerForm(ModelForm):
 
         if algorithm_enum.public_key_algo_oid.name == 'ECC':
             if not curve_input:
-                raise ValidationError('Curve must be selected for ECC-based algorithms.')
-
+                self.add_error('curve', 'Curve must be selected for ECC-based algorithms.')
             available_curves = [c.value.ossl_curve_name for c in NamedCurve]
             if curve_input not in available_curves:
-                raise ValidationError(f'Invalid ECC curve: {curve_input}')
+                self.add_error('curve', f'Invalid ECC curve: {curve_input}')
 
             cleaned_data['key_length'] = None
 

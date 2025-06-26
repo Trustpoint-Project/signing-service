@@ -1,3 +1,5 @@
+"""This File contains functions to create Public and Private Keys."""
+
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from trustpoint_core.oid import AlgorithmIdentifier, NamedCurve
@@ -5,28 +7,48 @@ from trustpoint_core.serializer import PrivateKeySerializer
 
 
 def generate_private_key(algorithm_oid_str: str, curve_name: str | None, key_size: int | None) -> str:
+    """This Function generates a Private Key. Which later on is used to get public Key.
+
+    Args:
+        algorithm_oid_str:  oid string of the algorithm to use.
+        curve_name: curve name which is used to generate the private key (either of two is used).
+        key_size: length of the private key (either of two is used).
+
+    Returns: Gives out the private key. In string pem format.
+
+    """
     algorithm_enum = AlgorithmIdentifier.from_dotted_string(algorithm_oid_str)
 
     if algorithm_enum.public_key_algo_oid.name == 'ECC':
         if not curve_name:
-            raise ValueError('ECC curve name is required.')
+            msg = 'ECC curve name is required.'
+            raise ValueError(msg)
 
         try:
             curve_obj = next(c.value.curve for c in NamedCurve if c.value.ossl_curve_name.lower() == curve_name.lower())
         except StopIteration:
             available = [c.value.ossl_curve_name for c in NamedCurve]
-            raise ValueError(f'Unsupported ECC curve: {curve_name}. Available: {available}')
+            msg = f'Unsupported ECC curve: {curve_name}. Available: {available}'
+            raise ValueError(msg) from None
 
         private_key = ec.generate_private_key(curve_obj())
     else:
         if not key_size:
-            raise ValueError('RSA key length is required.')
+            x = 'RSA key length is required.'
+            raise ValueError(x)
         private_key = rsa.generate_private_key(public_exponent=65537, key_size=key_size)
 
     pem = PrivateKeySerializer(private_key).as_pkcs8_pem()
     return pem.decode('utf-8')
 
 
-def load_private_key_object(pem_str: str):
-    """Loads a PEM-encoded private key string into private key object."""
+def load_private_key_object(pem_str: str) -> load_pem_private_key:
+    """This function loads a private key from PEM format.
+
+    Args:
+        pem_str: Private key in pem format.
+
+    Returns: Returns a PrivateKey object.
+
+    """
     return load_pem_private_key(pem_str.encode('utf-8'), password=None)

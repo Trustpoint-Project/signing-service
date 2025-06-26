@@ -15,6 +15,14 @@
 <body>
     <h1>Signer: {{ signer.unique_name }}</h1>
 
+        {% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
     <div class="field"><strong>Signer ID:</strong> {{ signer.pk }}</div>
     <div class="field"><strong>Signing Algorithm:</strong> {{signer.get_signing_algorithm_display}}</div>
     <div class="field"><strong>Hash Function:</strong> {{ signer.hash_function }}</div>

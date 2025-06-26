@@ -7,7 +7,7 @@ from trustpoint_core.oid import AlgorithmIdentifier, NamedCurve
 
 
 class Signer(models.Model):
-    """Generates Signer Object."""
+    """Contains fields for signer model."""
 
     SIGNING_ALGORITHM_CHOICES: ClassVar[list[tuple[str, str]]] = [
         (x.dotted_string, x.verbose_name) for x in AlgorithmIdentifier
@@ -35,15 +35,26 @@ class Signer(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
-        """Returns object name."""
+        """To represent the signer object with its unique name.
+
+        Returns: Give out signer objects unique name.
+
+        """
         return self.unique_name
 
 
 class SignedMessage(models.Model):
+    """Model to store signed messages, its signature and certificate(with public key)."""
+
     signer = models.ForeignKey(Signer, on_delete=models.CASCADE, related_name='signed_messages')
     hash_value = models.CharField(max_length=256)
     signature = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """String representation of SignedMessage object.
+
+        Returns: String formated name of signer and when it was signed.
+
+        """
         return f'Signature by {self.signer.unique_name} on {self.created_at.strftime("%Y-%m-%d %H:%M:%S")}'
