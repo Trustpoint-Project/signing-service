@@ -2,13 +2,14 @@
 
 from django.urls import path
 
-from .views import SignerCreate, SignerDelete, SignerDetail, SignerEdit, SignerList, SignHashAPIView
+from signers.views import SignHashAPIView, SignerCreateView, SignerListView, SignerDeleteView, SignerEditView, \
+    SignerDetailView
 
 urlpatterns = [
-    path('add-signer/', SignerCreate.as_view(), name='addSigner'),
-    path('', SignerList.as_view(), name='signerList'),
-    path('delete-signer/<int:pk>/', SignerDelete.as_view(), name='deleteSigner'),
-    path('edit-signer/<int:pk>/', SignerEdit.as_view(), name='editSigner'),
-    path('signer/<int:pk>/', SignerDetail.as_view(), name='signerDetail'),
+    path('add-signer/', SignerCreateView.as_view(), name='addSigner'),
+    path('', SignerListView.as_view(), name='signerList'),
+    path('delete-signer/<int:pk>/', SignerDeleteView.as_view(), name='deleteSigner'),
+    path('edit-signer/<int:pk>/', SignerEditView.as_view(), name='editSigner'),
+    path('signer/<int:pk>/', SignerDetailView.as_view(), name='signerDetail'),
     path('api/sign/', SignHashAPIView.as_view(), name='sign_hash_api'),
 ]

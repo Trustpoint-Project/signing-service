@@ -20,11 +20,22 @@
     </style>
 </head>
 <body>
-    <div class="container table-container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Signers List</h2>
-            <a href="{% url 'addSigner' %}" class="btn btn-primary">Add New Signer</a>
-        </div>
+   <div class="container table-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Signers List</h2>
+    <div class="d-flex align-items-center">
+        <a href="{% url 'addSigner' %}" class="btn btn-primary me-2">Add New Signer</a>
+        <a href="{% url 'token_list' %}" class="btn btn-warning me-2">Tokens</a>
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger">Logout</button>
+        </form>
+    </div>
+</div>
+
+
+
+
 
         <div class="table-responsive">
             <table class="table table-striped table-hover">

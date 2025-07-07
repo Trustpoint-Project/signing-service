@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Tokens</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .table-container {
+            margin: 30px auto;
+            max-width: 1000px;
+        }
+        .table-header {
+            background-color: #ffc107;
+            color: black;
+        }
+        .action-btns {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container table-container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>API Tokens for <strong>{{ request.user.username }}</strong></h2>
+    <div class="d-flex align-items-center">
+        <a href="{% url 'api_token' %}" class="btn btn-primary me-2">Generate Token</a>
+        <a href="{% url 'signerList' %}" class="btn btn-outline-secondary">← Back to Signers</a>
+    </div>
+  </div>
+
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-header">
+                <tr>
+                    <th>S. No.</th>
+                    <th>Token</th>
+                    <th>Created At</th>
+                    <th>Expires At</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for token in tokens %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><code>{{ token.key }}</code></td>
+                    <td>{{ token.created_at|date:"Y-m-d H:i" }}</td>
+                    <td>
+                        {% if token.expires_at < now %}
+                            <span class="text-danger">{{ token.expires_at|date:"Y-m-d H:i" }} (Expired)</span>
+                        {% else %}
+                            {{ token.expires_at|date:"Y-m-d H:i" }}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center">No tokens found. Click "Generate New Token" above.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -5,6 +5,8 @@ from typing import ClassVar
 from django.db import models
 from trustpoint_core.oid import AlgorithmIdentifier, NamedCurve
 
+from users.models import UserToken
+
 
 class KeyLengths(models.IntegerChoices):
     """Key Lengths Choices."""
@@ -49,6 +51,7 @@ class SignedMessage(models.Model):
     """Model to store signed messages, its signature and certificate(with public key)."""
 
     signer = models.ForeignKey(Signer, on_delete=models.CASCADE, related_name='signed_messages')
+    token = models.ForeignKey(UserToken, on_delete=models.SET_NULL, null=True, blank=True)
     hash_value = models.CharField(max_length=256)
     signature = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
