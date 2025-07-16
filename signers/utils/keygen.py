@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, get_args
 
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
-from trustpoint_core.types import PrivateKey
+from trustpoint_core.crypto_types import PrivateKey
 from trustpoint_core.oid import AlgorithmIdentifier, NamedCurve
 from trustpoint_core.serializer import PrivateKeySerializer
 
