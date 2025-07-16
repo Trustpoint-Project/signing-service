@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, get_args
 
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
-from trustpoint_core.crypto_types import PrivateKey
+from trustpoint_core.types import PrivateKey
 from trustpoint_core.oid import AlgorithmIdentifier, NamedCurve
 from trustpoint_core.serializer import PrivateKeySerializer
 
@@ -26,7 +26,15 @@ def generate_private_key(algorithm_oid_str: str, curve_name: str | None, key_siz
     """
     private_key: PRIVATE_KEY_TYPES
 
-    algorithm_enum = AlgorithmIdentifier.from_dotted_string(algorithm_oid_str)
+    algorithm_enum = None
+    for enum_member in AlgorithmIdentifier:
+        if getattr(enum_member, "dotted_string", None) == algorithm_oid_str:
+            algorithm_enum = enum_member
+            break
+
+    if algorithm_enum is None:
+        raise ValueError(f"Invalid algorithm OID: {algorithm_oid_str}")
+
     if algorithm_enum.public_key_algo_oid is None:
         msg = 'Public key oid cannot be None.'
         raise ValueError(msg)
@@ -36,9 +44,10 @@ def generate_private_key(algorithm_oid_str: str, curve_name: str | None, key_siz
             raise ValueError(msg)
 
         try:
-            curve_obj = next(c.value.curve for c in NamedCurve if c.value.ossl_curve_name.lower() == curve_name.lower())
+            curve_obj = next(c.curve for c in NamedCurve if c.ossl_curve_name.lower() == curve_name.lower())
         except StopIteration:
-            available = [c.value.ossl_curve_name for c in NamedCurve]
+            available = [c.ossl_curve_name for c in NamedCurve]
+
             msg = f'Unsupported ECC curve: {curve_name}. Available: {available}'
             raise ValueError(msg) from None
         if curve_obj is None:

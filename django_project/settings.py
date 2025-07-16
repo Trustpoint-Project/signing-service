@@ -28,7 +28,8 @@ django_stubs_ext.monkeypatch()
 # SECURITY WARNING: keep the secret key used in production secret!
 
 
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'unsafe-dev-key')
+SECRET_KEY = 'django-insecure-4hj3h$sdg8!lkj2@iopznr4389'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -64,12 +65,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'django_project.urls'
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 MEDIA_ROOT = BASE_DIR / Path('media')
 MEDIA_URL = '/media/'
 
-STATICFILES_DIRS = [BASE_DIR / Path('static')]
+
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 TEMPLATES = [
     {
@@ -88,6 +89,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_project.wsgi.application'
 
+ALLOWED_HOSTS = ['*']
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -96,6 +98,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+
     }
 }
 
@@ -147,3 +150,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/accounts/login'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login'
+STATIC_ROOT = BASE_DIR / "collected_static"
+STATICFILES_DIRS = [BASE_DIR / "static"]

@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 from trustpoint_core.oid import AlgorithmIdentifier, NamedCurve
 
+
 from signers.models import Signer
 
 
@@ -74,18 +75,23 @@ class SignerForm(ModelForm[Signer]):
             msg = 'Signing algorithm is required.'
             raise ValidationError(msg)
 
-        try:
-            algorithm_enum = AlgorithmIdentifier.from_dotted_string(algorithm_oid_str)
-        except ValueError as exception:
+        algorithm_enum = None
+        for enum_member in AlgorithmIdentifier:
+            if getattr(enum_member, "dotted_string", None) == algorithm_oid_str:
+                algorithm_enum = enum_member
+                break
+
+        if algorithm_enum is None:
             msg = f'Invalid algorithm: {algorithm_oid_str}'
-            raise ValidationError(msg) from exception
+            raise ValidationError(msg)
+
         if algorithm_enum.public_key_algo_oid is None:
             msg = 'Public key oid cannot be None.'
             raise ValidationError(msg)
         if algorithm_enum.public_key_algo_oid.name == 'ECC':
             if not curve_input:
                 self.add_error('curve', 'Curve must be selected for ECC-based algorithms.')
-            available_curves = [c.value.ossl_curve_name for c in NamedCurve]
+            available_curves = [c.ossl_curve_name for c in NamedCurve]
             if curve_input not in available_curves:
                 self.add_error('curve', f'Invalid ECC curve: {curve_input}')
 

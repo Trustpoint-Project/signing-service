@@ -24,7 +24,7 @@ class Signer(models.Model):
         (x.dotted_string, x.verbose_name) for x in AlgorithmIdentifier
     ]
     SIGNING_CURVE_CHOICES: ClassVar[list[tuple[str, str]]] = [
-        (x.value.ossl_curve_name, x.name) for x in NamedCurve if x.value.ossl_curve_name
+        (x.ossl_curve_name, x.name) for x in NamedCurve if x.ossl_curve_name
     ]
 
     unique_name = models.CharField(max_length=30, unique=True)
