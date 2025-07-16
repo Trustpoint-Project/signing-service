@@ -10,6 +10,7 @@ dependencies = [
     "django==5.1.8",
     "django-crispy-forms>=2.4",
     "django-stubs[compatible-mypy]==5.1.3",
+    "psycopg2-binary>=2.9.10",
     "trustpoint-core==0.2.5",
 ]
 
