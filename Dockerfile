@@ -1,3 +1,5 @@
+
+
 FROM python:3.12-slim
 
 # Install Apache and required tools
@@ -13,14 +15,18 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Install Python dependencies
 WORKDIR /code
-COPY requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt
+#  Copy dependency files first (Trustpoint style)
+COPY pyproject.toml uv.lock ./
+
+#  Install dependencies using uv (no requirements.txt)
+RUN pip install .
 
 RUN pip install mod_wsgi && \
     mod_wsgi-express install-module > /etc/apache2/mods-available/wsgi.load && \
     a2enmod wsgi
 
-# Copy project code
+# Copy project codels
+
 COPY . .
 
 RUN mkdir -p /var/www/static /var/www/media
