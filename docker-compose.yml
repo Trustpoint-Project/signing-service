@@ -3,6 +3,7 @@ services:
     build: .
     ports:
       - "8000:80"
+      - "8010:443"
     volumes:
       - .:/code
       - static_volume:/var/www/static

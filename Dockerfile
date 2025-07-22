@@ -23,11 +23,17 @@ RUN pip install .
 
 RUN pip install mod_wsgi && \
     mod_wsgi-express install-module > /etc/apache2/mods-available/wsgi.load && \
-    a2enmod wsgi
+    a2enmod wsgi &&\
+    a2enmod ssl
+
+
+
 
 # Copy project codels
 
 COPY . .
+# Copy SSL certs
+COPY apache/ssl /etc/apache2/ssl
 
 RUN mkdir -p /var/www/static /var/www/media
 
@@ -45,7 +51,7 @@ COPY apache/django.conf /etc/apache2/sites-available/000-default.conf
 RUN chown -R www-data:www-data /var/www/static /var/www/media /code
 
 # Expose Apache port
-EXPOSE 80
+EXPOSE 80 443
 
 # Start Apache in foreground
 ENTRYPOINT ["/entrypoint.sh"]
