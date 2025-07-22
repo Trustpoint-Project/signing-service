@@ -4,8 +4,7 @@ FROM python:3.12-slim
 
 # Install Apache and required tools
 RUN apt-get update && apt-get install -y \
-    apache2 apache2-dev curl build-essential libapache2-mod-wsgi-py3 \
-    postgresql-client && \
+    apache2 apache2-dev curl build-essential libapache2-mod-wsgi-py3 &&\
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Create virtual environment
@@ -42,8 +41,6 @@ ENV DATABASE_HOST=db
 ENV DATABASE_PORT=5432
 ENV DATABASE_USER=myuser
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
 
 # Copy Apache config
 COPY apache/django.conf /etc/apache2/sites-available/000-default.conf
@@ -53,5 +50,6 @@ RUN chown -R www-data:www-data /var/www/static /var/www/media /code
 # Expose Apache port
 EXPOSE 80 443
 
-# Start Apache in foreground
-ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["apachectl", "-D", "FOREGROUND"]
+
