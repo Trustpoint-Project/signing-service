@@ -2,7 +2,7 @@ services:
   web:
     build: .
     ports:
-      - "8000:80"
+      - "8001:80"
       - "8010:443"
     volumes:
       - .:/code
