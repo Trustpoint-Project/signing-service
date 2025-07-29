@@ -34,7 +34,7 @@ SECRET_KEY = 'django-insecure-4hj3h$sdg8!lkj2@iopznr4389'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS: list[str] = []
+
 
 
 # Application definition
@@ -65,7 +65,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'django_project.urls'
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
-STATIC_URL = '/static/'
+
 
 MEDIA_ROOT = BASE_DIR / Path('media')
 MEDIA_URL = '/media/'
@@ -88,6 +88,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'django_project.wsgi.application'
+CSRF_TRUSTED_ORIGINS = [
+    "https://127.0.0.1:8081",
+]
 
 ALLOWED_HOSTS = ['*']
 
@@ -169,5 +172,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/accounts/login'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login'
+
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "collected_static"
 STATICFILES_DIRS = [BASE_DIR / "static"]
