@@ -89,7 +89,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_project.wsgi.application'
 CSRF_TRUSTED_ORIGINS = [
-    "https://127.0.0.1:8081",
+    "https://127.0.0.1:8081", "https://localhost:8081",
 ]
 
 ALLOWED_HOSTS = ['*']
