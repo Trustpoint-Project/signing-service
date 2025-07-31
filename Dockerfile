@@ -14,10 +14,10 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Install Python dependencies
 WORKDIR /code
-#  Copy dependency files first (Trustpoint style)
+
 COPY pyproject.toml uv.lock ./
 
-#  Install dependencies using uv (no requirements.txt)
+
 RUN pip install .
 
 RUN pip install mod_wsgi && \
@@ -31,7 +31,6 @@ RUN pip install mod_wsgi && \
 # Copy project codels
 
 COPY . .
-# Copy SSL certs
 COPY apache/ssl /etc/apache2/ssl
 
 RUN mkdir -p /var/www/static /var/www/media
@@ -42,7 +41,7 @@ ENV DATABASE_PORT=5432
 ENV DATABASE_USER=myuser
 
 
-# Copy Apache config
+
 COPY apache/django.conf /etc/apache2/sites-available/000-default.conf
 
 RUN chown -R www-data:www-data /var/www/static /var/www/media /code
