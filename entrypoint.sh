@@ -18,5 +18,8 @@ else
   echo "TLS certificate already exists."
 fi
 
-echo "Starting NGINX..."
+# Start Gunicorn in background
+gunicorn django_project.wsgi:application --bind 0.0.0.0:8000 &
+
+# Start NGINX in foreground
 exec nginx -g "daemon off;"
