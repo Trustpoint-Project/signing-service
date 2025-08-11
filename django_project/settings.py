@@ -9,7 +9,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-import os
 from pathlib import Path
 
 import django_stubs_ext
@@ -33,8 +32,6 @@ SECRET_KEY = 'django-insecure-4hj3h$sdg8!lkj2@iopznr4389'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-
 
 
 # Application definition
@@ -89,7 +86,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_project.wsgi.application'
 CSRF_TRUSTED_ORIGINS = [
-    "https://127.0.0.1:8081", "https://localhost:8081",
+    'https://127.0.0.1:8081',
+    'https://localhost:8081',
 ]
 
 ALLOWED_HOSTS = ['*']
@@ -174,5 +172,5 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login'
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / "collected_static"
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / 'collected_static'
+STATICFILES_DIRS = [BASE_DIR / 'static']

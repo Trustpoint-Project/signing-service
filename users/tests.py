@@ -1,3 +1,1 @@
-from django.test import TestCase
-
-# Create your tests here.
+"""Contains testcase for User App."""

@@ -2,8 +2,14 @@
 
 from django.urls import path
 
-from signers.views import SignHashAPIView, SignerCreateView, SignerListView, SignerDeleteView, SignerEditView, \
-    SignerDetailView
+from signers.views import (
+    SignerCreateView,
+    SignerDeleteView,
+    SignerDetailView,
+    SignerEditView,
+    SignerListView,
+    SignHashAPIView,
+)
 
 urlpatterns = [
     path('add-signer/', SignerCreateView.as_view(), name='addSigner'),

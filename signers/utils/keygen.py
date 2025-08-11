@@ -28,12 +28,12 @@ def generate_private_key(algorithm_oid_str: str, curve_name: str | None, key_siz
 
     algorithm_enum = None
     for enum_member in AlgorithmIdentifier:
-        if getattr(enum_member, "dotted_string", None) == algorithm_oid_str:
+        if getattr(enum_member, 'dotted_string', None) == algorithm_oid_str:
             algorithm_enum = enum_member
             break
 
     if algorithm_enum is None:
-        raise ValueError(f"Invalid algorithm OID: {algorithm_oid_str}")
+        raise ValueError(f'Invalid algorithm OID: {algorithm_oid_str}')
 
     if algorithm_enum.public_key_algo_oid is None:
         msg = 'Public key oid cannot be None.'

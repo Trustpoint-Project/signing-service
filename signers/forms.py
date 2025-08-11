@@ -8,7 +8,6 @@ from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 from trustpoint_core.oid import AlgorithmIdentifier, NamedCurve
 
-
 from signers.models import Signer
 
 
@@ -77,7 +76,7 @@ class SignerForm(ModelForm[Signer]):
 
         algorithm_enum = None
         for enum_member in AlgorithmIdentifier:
-            if getattr(enum_member, "dotted_string", None) == algorithm_oid_str:
+            if getattr(enum_member, 'dotted_string', None) == algorithm_oid_str:
                 algorithm_enum = enum_member
                 break
 

@@ -4,22 +4,21 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ("signers", "0002_alter_signer_key_length"),
+        ('signers', '0002_alter_signer_key_length'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name="signer",
-            name="key_length",
+            model_name='signer',
+            name='key_length',
             field=models.IntegerField(
                 blank=True,
                 choices=[
-                    (2048, "2048 bits"),
-                    (3072, "3072 bits"),
-                    (4096, "4096 bits"),
-                    (8192, "8192 bits"),
+                    (2048, '2048 bits'),
+                    (3072, '3072 bits'),
+                    (4096, '4096 bits'),
+                    (8192, '8192 bits'),
                 ],
                 null=True,
             ),

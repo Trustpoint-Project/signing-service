@@ -7,33 +7,30 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ("users", "0001_initial"),
+        ('users', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="usertoken",
-            name="created_at",
-            field=models.DateTimeField(
-                auto_now_add=True, default=django.utils.timezone.now
-            ),
+            model_name='usertoken',
+            name='created_at',
+            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name="usertoken",
-            name="expires_at",
+            model_name='usertoken',
+            name='expires_at',
             field=models.DateTimeField(default=django.utils.timezone.now),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name="usertoken",
-            name="user",
+            model_name='usertoken',
+            name='user',
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="tokens",
+                related_name='tokens',
                 to=settings.AUTH_USER_MODEL,
             ),
         ),
