@@ -7,14 +7,13 @@ from django.utils import timezone
 
 class UserToken(models.Model):
     """Model representing an authentication token for a user."""
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tokens')
     key = models.CharField(max_length=40, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField()
 
-
-
-    def __str__(self)-> str:
+    def __str__(self) -> str:
         """To represent the Token object with its user(creator) and its expiration date.
 
         Returns: Give out Token object its user(Creator) and its expiration date.

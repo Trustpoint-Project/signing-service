@@ -21,9 +21,10 @@ COPY . .
 COPY nginx/default.conf /etc/nginx/nginx.conf
 
 # SSL directory setup
-RUN mkdir -p /etc/nginx/ssl
+RUN mkdir -p /etc/nginx/tls
+COPY nginx/CA/client-ca.crt /etc/nginx/tls/client-ca-bundle.pem
 
-# Collect static files (Django is now available in .venv/bin/python)
+
 
 
 
