@@ -5,8 +5,6 @@ from typing import ClassVar
 from django.db import models
 from trustpoint_core.oid import AlgorithmIdentifier, NamedCurve
 
-from users.models import UserToken
-
 
 class KeyLengths(models.IntegerChoices):
     """Key Lengths Choices."""
