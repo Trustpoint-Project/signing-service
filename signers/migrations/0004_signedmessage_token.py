@@ -5,21 +5,20 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ("signers", "0003_alter_signer_key_length"),
-        ("users", "0002_usertoken_created_at_usertoken_expires_at_and_more"),
+        ('signers', '0003_alter_signer_key_length'),
+        ('users', '0002_usertoken_created_at_usertoken_expires_at_and_more'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="signedmessage",
-            name="token",
+            model_name='signedmessage',
+            name='token',
             field=models.ForeignKey(
                 blank=True,
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
-                to="users.usertoken",
+                to='users.usertoken',
             ),
         ),
     ]

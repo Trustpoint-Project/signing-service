@@ -1,7 +1,8 @@
-
-from django.urls import path
+"""Module containing urls for user app."""
 from django.contrib.auth.views import LoginView, LogoutView
-from users.views import SignUpView, TokenListView, TokenCreateView
+from django.urls import path
+
+from users.views import SignUpView, TokenCreateView, TokenListView
 
 urlpatterns = [
     path('signup/', SignUpView.as_view(), name='signup'),
