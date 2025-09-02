@@ -9,6 +9,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 import django_stubs_ext
@@ -27,7 +28,7 @@ django_stubs_ext.monkeypatch()
 # SECURITY WARNING: keep the secret key used in production secret!
 
 
-SECRET_KEY = 'django-insecure-4hj3h$sdg8!lkj2@iopznr4389'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-4hj3h$sdg8!lkj2@iopznr4389')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -92,27 +93,6 @@ CSRF_TRUSTED_ORIGINS = [
 
 ALLOWED_HOSTS = ['*']
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#
-#     }
-# }
-#
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': os.environ.get('POSTGRES_DB', 'mydb'),
-#         'USER': os.environ.get('POSTGRES_USER', 'myuser'),
-#         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'mypassword'),
-#         'HOST': os.environ.get('DATABASE_HOST', 'db'),
-#         'PORT': os.environ.get('DATABASE_PORT', '5432'),
-#     }
-# }
 
 DATABASES = {
     'default': {

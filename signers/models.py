@@ -49,7 +49,7 @@ class SignedMessage(models.Model):
     """Model to store signed messages, its signature and certificate(with public key)."""
 
     signer = models.ForeignKey(Signer, on_delete=models.CASCADE, related_name='signed_messages')
-    cert_subject = models.TextField(null=True, blank=True)
+    cert_subject = models.TextField()
     hash_value = models.CharField(max_length=256)
     signature = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

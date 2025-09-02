@@ -57,7 +57,7 @@ class SignerForm(ModelForm[Signer]):
 
         return unique_name
 
-    def clean(self) -> dict[str, Any]:
+    def clean(self) -> dict[str, Any]:  # noqa: C901
         """This functions validates, checks and parse the data from the form.
 
         Returns: Cleaned and validated data from the form.
